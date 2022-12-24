@@ -1,0 +1,218 @@
+{% extends 'front/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+  <!-- ======= Hero Section ======= -->
+  <div class="page-header min-vh-100" style="background-image: url(static/front/img/bgtech.jpg);" loading="lazy">
+    <span class="mask bg-gradient-info opacity-4"></span>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 text-center mx-auto">
+          <h1 class="text-white">TechMin <span class="text-white" id="typed"></span></h1>
+            <div id="typed-strings">
+            </div>
+          <p class="lead text-white text-center pe-5 mt-4">TechMin Ialah sebuah Website yang berisi sekumpulan isi berita yang berhubungan dengan teknologi dan sebagainya. </p>
+          <br />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <main id="main">
+
+    <!-- ======= Services Section ======= -->
+    <section id="kategori"><br><br><br>
+    <div class="article">
+      <div class="row container">
+        <div class="col-md-8">
+          {% for p in artikel %}
+          <div class="card card-blog card-plain-text-center" style="padding: 10px;">
+            <div class="card-image">
+              <a href="{% url 'detail_artikel' p.id %}"><img src="{{p.ImgUrl}}" alt="" class="img-fluid"></a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-category">
+              <span class="badge badge-primary main-tag"></span>
+            </div>
+           
+              <h3 class="card-title"><a href="{% url 'detail_artikel' p.id %}">{{p.judul}}</h3>
+            
+            <div class="card-description">
+              <p>{{p.body|safe|truncatechars:200}}</p>
+            </div>
+            <div class="card-description">
+              <span class="btn bg-gradient-success w-auto me-2">🕒 {{p.date}}</span><span class="btn bg-gradient-info w-auto me-2">💠 {{p.kategori}}</span><span class="btn bg-gradient-primary w-auto me-2" href="{% url 'detail_artikel' p.id %}">Baca Selengkapnya</span>
+            </div>
+          </div><br>
+          <a class="btn bg-gradient-primary w-auto me-2" href="{% url 'detail_artikel' p.id %}"></a>
+          <hr>
+          {% endfor %}
+        </div>
+        {% comment %} --------- {% endcomment %}
+        <div class="col-md-4">
+          <div class="widget-sidebar widget-tags">
+            <h5 class="sidebar-title">Kategori</h5>
+            <div class="sidebar-content" >
+              {% for k in kategori %}
+              <ul>
+                <li>
+                  <a href="{% url 'artikel_filter' k.nama %}" style="color: red;">{{k.nama}}</a>
+                </li>
+              </ul>
+              {% endfor %}
+            </div>
+          </div>
+        
+        
+        <div class="widget-sidebar">
+          <h5 class="sidebar-title">List Post Kategori</h5>
+          <div class="sidebar-content">
+            {% for p in artikel  %}
+            <ul class="list-sidebar">
+              <li>
+                <a href="{% url 'detail_artikel' p.id %}">{{ p.judul }}.</a>
+              </li>
+            </ul>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+  </section>
+
+    <!-- ======= Blog Section ======= -->
+
+    <section id="blog" class="blog-mf sect-pt4 route">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="title-box text-center">
+              <h3 class="title-a">
+                Blog
+              </h3>
+              {% comment %} <p class="subtitle-a">
+                Semua Artikel.
+              </p> {% endcomment %}
+              <div class="line-mf"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          {% for b in berita  %}
+          <div class="col-md-4">
+            <div class="card card-blog">
+              <div class="card-img">
+                <a href="{% url 'detail_berita' b.title %}"><img src="{{ b.thumb }}" width="510" height="180" alt="" class="img-fluid"></a>
+              </div>
+              <div class="card-body">
+                <div class="card-category-box">
+                  <div class="card-category">
+                    <h6 class="category">{{ b.tag }}</h6>
+                  </div>
+                </div>
+                <h3 class="card-title"><a href="{% url 'detail_berita' b.title %}">{{ b.title }}</a></h3>
+                <p class="card-description">
+                  {{ b.desc|safe }}
+                </p>
+              </div>
+              <div class="card-footer">
+                <div class="post-author">
+                  <a href="#">
+                    <img src="{% static 'front/img/testimonial-2.jpg' %}" alt="" class="avatar rounded-circle">
+                    <span class="author">{{ b.author }}</span>
+                  </a>
+                </div>
+                <div class="post-date">
+                  <span class="bi bi-clock"></span>{{ b.time }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section><!-- End Blog Section -->
+    
+    {% if artikel.has_other_pages %}
+        <ul class="pagination container">
+          {% if artikel.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ artikel.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+            <li class="page-link"><span>&laquo;</span></li>
+          {% endif %}
+          {% for i in artikel.paginator.page_range %}
+            {% if artikel.number == i %}
+              <li class="page-link"><span>{{ i }} <span class="sr-only"></span></span></li>
+            {% else %}
+              <li class="page-link"><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if artikel.has_next %}
+            <li class="page-link"><a href="?page={{ artikel.next_page_number }}">&raquo;</a></li>
+          {% else %}
+            <li class="page-link"><span>&raquo;</span></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+
+    <!-- ======= Contact Section ======= -->
+    <section class="py-7 bg-white position-relative">
+      <div class="page-header min-vh-50" style="background-image: url(&#39;{% static 'front/img/bgc1.jpg' %}&#39;);">
+        <span class="mask bg-gradient-dark opacity-4"></span>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-6 text-center mx-auto">
+              <h1 class="text-white mt-4 mb-1">Got a question?</h1>
+              <p class="lead text-white mb-6">We&#39;d like to talk more about what you need</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row mt-n5 blur border-radius-xl shadow-blur position-relative overflow-hidden">
+          <div class="col-lg-3 col-md-6 col-6 position-relative my-auto">
+            <div class="p-3 text-center">
+              <div class="icon icon-shape icon-md bg-gradient-primary shadow-primary text-center mx-auto">
+                <i class="material-icons opacity-10">menu_book</i>
+              </div>
+              <h5 class="mt-3 mb-1">Alamat</h5>
+              <p class="mb-0">Jln.cipto.mangunkusumo, Loa Janan</p>
+              <hr class="vertical dark">
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-6 position-relative my-auto">
+            <div class="p-3 text-center">
+              <div class="icon icon-shape icon-md bg-gradient-primary shadow-primary text-center mx-auto">
+                <i class="material-icons opacity-10">email</i>
+              </div>
+              <h5 class="mt-3 mb-1">Email</h5>
+              <p class="mb-0">2011102441067@umkt.ac.id</p>
+            </div>
+            <hr class="vertical dark">
+          </div>
+          <div class="col-lg-3 col-md-6 col-6 position-relative my-auto">
+            <div class="p-3 text-center">
+              <div class="icon icon-shape icon-md bg-gradient-primary shadow-primary text-center mx-auto">
+                <i class="material-icons opacity-10">call</i>
+              </div>
+              <h5 class="mt-3 mb-1">Phone</h5>
+              <p class="mb-0">08134229328#</p>
+            </div>
+            <hr class="vertical dark">
+          </div>
+          <div class="col-lg-3 col-md-6 col-6 position-relative my-auto">
+            <div class="p-3 text-center">
+              <div class="icon icon-shape icon-md bg-gradient-primary shadow-primary text-center mx-auto">
+                <i class="material-icons opacity-10">contacts</i>
+              </div>
+              <h5 class="mt-3 mb-1">Contact</h5>
+              <p class="mb-0">Ibnu Sabdaniansyah</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endblock content %}
